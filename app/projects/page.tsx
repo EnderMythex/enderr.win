@@ -29,7 +29,7 @@ const projects: Project[] = [
         freq: "108.0",
         website: "https://cybercookie.party/",
         github: "https://github.com/EnderMythex/Cyber-Cookie",
-        internalPage: "/cybercookie",
+        // internalPage: "/cybercookie",
     },
     {
         id: "002",
