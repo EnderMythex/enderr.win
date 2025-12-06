@@ -40,7 +40,7 @@
 }
 
 .dark {
-  --background: #000000;
+  --background: transparent;
   --foreground: #a0a0a0;
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -72,6 +72,15 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+}
+
+.dark body {
+  background-image: url('/bg.png') !important;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent !important;
 }
 
 @theme inline {
@@ -121,7 +130,13 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-image: url('/bg.png') !important;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent !important;
   }
 }
 

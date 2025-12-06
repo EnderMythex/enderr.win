@@ -384,7 +384,7 @@ const SocialCard = memo(function SocialCard({
 
 export default function AboutPage() {
     return (
-        <main className="relative min-h-screen bg-black overflow-hidden cursor-none">
+        <main className="relative min-h-screen overflow-hidden cursor-none">
             <NoiseOverlay />
             <CursorDistortion />
             <GlitchTrail />

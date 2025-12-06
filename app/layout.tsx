@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="dark">
-      <body className={`${spaceMono.variable} font-mono antialiased bg-black`}>
+      <body className={`${spaceMono.variable} font-mono antialiased`}>
         {children}
         <Analytics />
       </body>

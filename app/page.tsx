@@ -7,7 +7,7 @@ import { GlitchTrail } from "@/components/glitch-trail"
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black overflow-hidden cursor-none">
+    <main className="relative min-h-screen overflow-hidden cursor-none">
       <NoiseOverlay />
       <CursorDistortion />
       <GlitchTrail />
