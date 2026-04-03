@@ -24,7 +24,101 @@
   <div id="loader-container">
     <div id="panel-top" class="loader-panel"></div>
     <div id="panel-bottom" class="loader-panel"></div>
-    <div class="signature-loader">EnderMythex</div>
+    <svg class="signature-loader" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        @font-face {
+          font-family: 'HatheemBosteem';
+          src: url('fonts/Hathem Bosteem.ttf') format('truetype');
+        }
+
+        .signature-text {
+          font-family: 'HatheemBosteem', serif;
+          font-size: 80px;
+          fill: none;
+          stroke: #fff;
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          letter-spacing: 2px;
+        }
+
+        .sig-letter {
+          stroke-dasharray: 300;
+          stroke-dashoffset: -300;
+          opacity: 0;
+          animation: drawLetter 0.4s ease-out forwards;
+        }
+
+        .sig-letter:nth-child(1) {
+          animation-delay: 0.3s;
+        }
+
+        .sig-letter:nth-child(2) {
+          animation-delay: 0.7s;
+        }
+
+        .sig-letter:nth-child(3) {
+          animation-delay: 1.1s;
+        }
+
+        .sig-letter:nth-child(4) {
+          animation-delay: 1.5s;
+        }
+
+        .sig-letter:nth-child(5) {
+          animation-delay: 1.9s;
+        }
+
+        .sig-letter:nth-child(6) {
+          animation-delay: 2.3s;
+        }
+
+        .sig-letter:nth-child(7) {
+          animation-delay: 2.7s;
+        }
+
+        .sig-letter:nth-child(8) {
+          animation-delay: 3.1s;
+        }
+
+        .sig-letter:nth-child(9) {
+          animation-delay: 3.5s;
+        }
+
+        .sig-letter:nth-child(10) {
+          animation-delay: 3.9s;
+        }
+
+        .sig-letter:nth-child(11) {
+          animation-delay: 4.3s;
+        }
+
+        @keyframes drawLetter {
+          0% {
+            opacity: 0;
+            stroke-dashoffset: -300;
+          }
+
+          to {
+            opacity: 1;
+            stroke-dashoffset: 0;
+          }
+        }
+      </style>
+      <text class="signature-text" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">
+        <tspan class="sig-letter">E</tspan>
+        <tspan class="sig-letter">n</tspan>
+        <tspan class="sig-letter">d</tspan>
+        <tspan class="sig-letter">e</tspan>
+        <tspan class="sig-letter">r</tspan>
+        <tspan class="sig-letter">M</tspan>
+        <tspan class="sig-letter">y</tspan>
+        <tspan class="sig-letter">t</tspan>
+        <tspan class="sig-letter">h</tspan>
+        <tspan class="sig-letter">e</tspan>
+        <tspan class="sig-letter">x</tspan>
+      </text>
+    </svg>
   </div>
 
   <video class="video-background" autoplay loop muted playsinline>
