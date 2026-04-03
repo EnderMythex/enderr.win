@@ -59,44 +59,23 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'HatheemBosteem', serif;
-  font-size: 3.5rem;
-  color: #fff;
-  letter-spacing: 2px;
-  margin: 0;
-  text-align: center;
-  white-space: nowrap;
+  width: 600px;
+  height: 200px;
   z-index: 1000;
-  animation: signatureWrite 2s ease-out 0.3s forwards;
-  clip-path: inset(0 100% 0 0);
-}
-
-@keyframes signatureWrite {
-  0% {
-    opacity: 0;
-    clip-path: inset(0 100% 0 0);
-  }
-
-  100% {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-#loader-container.panels-open .signature-loader {
-  animation: signatureFadeOut 0.6s ease-out forwards !important;
 }
 
 @keyframes signatureFadeOut {
   0% {
     opacity: 1;
-    clip-path: inset(0 0 0 0);
   }
 
   100% {
     opacity: 0;
-    clip-path: inset(0 100% 0 0);
   }
+}
+
+#loader-container.panels-open .signature-loader {
+  animation: signatureFadeOut 0.6s ease-out forwards !important;
 }
 
 ::selection {
