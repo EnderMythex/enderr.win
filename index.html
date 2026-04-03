@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnderMythex</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div id="loader-container">
+    <div id="panel-top" class="loader-panel"></div>
+    <div id="panel-bottom" class="loader-panel"></div>
+  </div>
+
+  <video class="video-background" autoplay loop muted playsinline>
+    <source src="https://cdn.enderr.win/maintenance-video.mp4" type="video/mp4">
+    <source src="./videos/axiom.mp4" type="video/mp4">
+  </video>
+
+  <div class="top-bar"></div>
+
+  <div class="wrapper">
+    <p class="sub-title">enderr.win</p>
+    <h1>EnderMythex</h1>
+    <p class="description">developer • trader<br>building stuff on the internet.</p>
+
+    <div id="links">
+      <a href="https://x.com/Endermythex_" target="_blank" data-preview="./pictures/x.png">twitter</a>
+      <a href="https://discord.enderr.win/" target="_blank" data-preview="./pictures/discord.png">discord</a>
+      <a href="https://axiom.trade/@ender0x" target="_blank" data-preview="./videos/axiom.mp4">axiom</a>
+      <a href="https://grass.enderr.win/" target="_blank" data-preview="./videos/grass.mp4">grass</a>
+      <a href="https://status.enderr.win/" target="_blank">status</a>
+      <a href="#" id="projectsBtn">projects</a>
+      <a href="mailto:endermythex@enderr.win">email</a>
+    </div>
+
+    <div class="footer">
+      <div class="langs">
+        <span class="lang-btn" data-lang="fr">Français</span>
+        <span class="lang-btn active" data-lang="en">English</span>
+        <span class="lang-btn" data-lang="ja">日本語</span>
+        <span class="lang-btn" data-lang="ru">Русский</span>
+      </div>
+      <p>© <span class="copyright-year"></span> - All rights reserved</p>
+    </div>
+  </div>
+
+  <div class="bottom-bar"></div>
+
+  <div class="link-preview" id="linkPreview">
+    <img id="previewImg" src="" alt="preview">
+  </div>
+
+  <div class="modal-overlay" id="projectsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>projects</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div id="repoList"></div>
+    </div>
+  </div>
+</body>
+
+</html>
