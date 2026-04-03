@@ -233,6 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader-container');
     setTimeout(() => {
       loader.classList.add('panels-open');
-    }, 100);
+    }, 3000);
   });
 });
