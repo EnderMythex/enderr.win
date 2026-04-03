@@ -33,7 +33,7 @@
 
         .signature-text {
           font-family: 'HatheemBosteem', serif;
-          font-size: 80px;
+          font-size: 50px;
           fill: none;
           stroke: #fff;
           stroke-width: 2;
@@ -93,6 +93,26 @@
           animation-delay: 4.3s;
         }
 
+        .sig-letter:nth-child(7) {
+          animation-delay: 2.7s;
+        }
+
+        .sig-letter:nth-child(8) {
+          animation-delay: 3.1s;
+        }
+
+        .sig-letter:nth-child(9) {
+          animation-delay: 3.5s;
+        }
+
+        .sig-letter:nth-child(10) {
+          animation-delay: 3.9s;
+        }
+
+        .sig-letter:nth-child(11) {
+          animation-delay: 4.3s;
+        }
+
         @keyframes drawLetter {
           0% {
             opacity: 0;
@@ -101,6 +121,18 @@
 
           to {
             opacity: 1;
+            stroke-dashoffset: 0;
+          }
+        }
+
+        .signature-underline {
+          stroke-dasharray: 600;
+          stroke-dashoffset: 600;
+          animation: drawUnderline 0.8s ease-out 4.8s forwards;
+        }
+
+        @keyframes drawUnderline {
+          to {
             stroke-dashoffset: 0;
           }
         }
@@ -118,6 +150,8 @@
         <tspan class="sig-letter">e</tspan>
         <tspan class="sig-letter">x</tspan>
       </text>
+      <line class="signature-underline" x1="20%" y1="120" x2="80%" y2="120" stroke="#fff" stroke-width="2"
+        stroke-linecap="round"></line>
     </svg>
   </div>
 
