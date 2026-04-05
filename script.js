@@ -12,7 +12,8 @@ const translations = {
     },
     projects: {
       title: 'projects',
-      close: '×'
+      close: '×',
+      hint: 'click anywhere to go back'
     },
     repos: [
       { name: 'enderr.win', desc: 'Personal portfolio website', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
@@ -33,7 +34,8 @@ const translations = {
     },
     projects: {
       title: 'projets',
-      close: '×'
+      close: '×',
+      hint: 'cliquez ailleurs pour revenir'
     },
     repos: [
       { name: 'enderr.win', desc: 'Site portfolio personnel', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
@@ -54,7 +56,8 @@ const translations = {
     },
     projects: {
       title: 'プロジェクト',
-      close: '×'
+      close: '×',
+      hint: 'クリックで戻る'
     },
     repos: [
       { name: 'enderr.win', desc: '個人ポートフォリオサイト', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
@@ -75,7 +78,8 @@ const translations = {
     },
     projects: {
       title: 'проекты',
-      close: '×'
+      close: '×',
+      hint: 'нажмите для возврата'
     },
     repos: [
       { name: 'enderr.win', desc: 'Персональный сайт-портфолио', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
@@ -129,23 +133,51 @@ function applyLang(lang) {
 function initModal() {
   const modal = document.getElementById('projectsModal');
   const repoList = document.getElementById('repoList');
+  const projectsView = document.getElementById('projects-view');
+  const loader = document.getElementById('loader-container');
+  let projectsMode = false;
 
   document.getElementById('projectsBtn').addEventListener('click', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const lang = localStorage.getItem('lang') || getBrowserLang();
     const t = translations[lang];
 
-    repoList.innerHTML = t.repos.map(r => `
-      <div class="repo-card">
-        <h3><a href="${r.url}" target="_blank">${r.name}</a></h3>
-        <p>${r.desc}</p>
-        <div class="repo-meta">
-          <span>${r.lang}</span>
-          <span>★ ${r.stars}</span>
+    if (!projectsView) return;
+
+    loader.classList.remove('panels-open');
+    loader.classList.remove('hide-signature');
+    loader.classList.add('panels-close');
+    
+    setTimeout(() => {
+      projectsView.innerHTML = `
+        <div class="projects-arrows">
+          ${t.repos.map(r => `
+            <a href="${r.url}" target="_blank">${r.name}</a>
+          `).join('')}
         </div>
-      </div>
-    `).join('');
-    modal.classList.add('active');
+        <p class="projects-hint">${t.projects.hint || 'click anywhere to go back'}</p>
+      `;
+      projectsView.classList.add('active');
+      setTimeout(() => {
+        projectsView.style.opacity = '1';
+      }, 50);
+    }, 2000);
+
+    projectsMode = true;
+  });
+
+  document.addEventListener('click', (e) => {
+    if (projectsMode && !e.target.closest('.projects-arrows') && !e.target.closest('#projectsBtn')) {
+      projectsMode = false;
+      projectsView.style.opacity = '0';
+      setTimeout(() => {
+        projectsView.classList.remove('active');
+        loader.classList.add('hide-signature');
+        loader.classList.remove('panels-close');
+        loader.classList.add('panels-open');
+      }, 300);
+    }
   });
 
   document.getElementById('closeModal').addEventListener('click', () => {
