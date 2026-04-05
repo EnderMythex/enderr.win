@@ -11,14 +11,8 @@ const translations = {
       email: 'email'
     },
     projects: {
-      title: 'projects',
-      close: '×',
       hint: 'click anywhere to go back'
     },
-    repos: [
-      { name: 'enderr.win', desc: 'Personal portfolio website', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
-      { name: 'grass-bot', desc: 'Grass automation bot', url: 'https://github.com/EnderMythex/grass-bot', lang: 'Python', stars: 0 },
-    ],
     copy: '© {year} - All rights reserved'
   },
   fr: {
@@ -33,14 +27,8 @@ const translations = {
       email: 'e-mail'
     },
     projects: {
-      title: 'projets',
-      close: '×',
       hint: 'cliquez ailleurs pour revenir'
     },
-    repos: [
-      { name: 'enderr.win', desc: 'Site portfolio personnel', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
-      { name: 'grass-bot', desc: 'Bot d\'automatisation Grass', url: 'https://github.com/EnderMythex/grass-bot', lang: 'Python', stars: 0 },
-    ],
     copy: '© {year} - Tous droits réservés'
   },
   ja: {
@@ -55,14 +43,8 @@ const translations = {
       email: 'メール'
     },
     projects: {
-      title: 'プロジェクト',
-      close: '×',
       hint: 'クリックで戻る'
     },
-    repos: [
-      { name: 'enderr.win', desc: '個人ポートフォリオサイト', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
-      { name: 'grass-bot', desc: 'Grass自動化ボット', url: 'https://github.com/EnderMythex/grass-bot', lang: 'Python', stars: 0 },
-    ],
     copy: '© {year} - 無断転載禁止'
   },
   ru: {
@@ -77,14 +59,8 @@ const translations = {
       email: 'почта'
     },
     projects: {
-      title: 'проекты',
-      close: '×',
       hint: 'нажмите для возврата'
     },
-    repos: [
-      { name: 'enderr.win', desc: 'Персональный сайт-портфолио', url: 'https://github.com/EnderMythex/enderr.win', lang: 'HTML', stars: 0 },
-      { name: 'grass-bot', desc: 'Бот автоматизации Grass', url: 'https://github.com/EnderMythex/grass-bot', lang: 'Python', stars: 0 },
-    ],
     copy: '© {year} - Все права защищены'
   }
 };
@@ -123,7 +99,6 @@ function applyLang(lang) {
   });
 
   document.getElementById('projectsBtn').textContent = t.links.projects;
-  document.querySelector('.modal-header h2').textContent = t.projects.title;
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -131,9 +106,9 @@ function applyLang(lang) {
 }
 
 function initModal() {
-  const modal = document.getElementById('projectsModal');
-  const repoList = document.getElementById('repoList');
   const projectsView = document.getElementById('projects-view');
+  const projectsArrows = document.querySelector('.projects-arrows');
+  const projectsHint = document.querySelector('.projects-hint');
   const loader = document.getElementById('loader-container');
   let projectsMode = false;
 
@@ -146,18 +121,11 @@ function initModal() {
     if (!projectsView) return;
 
     loader.classList.remove('panels-open');
-    loader.classList.remove('hide-signature');
+    loader.classList.add('hide-signature');
     loader.classList.add('panels-close');
 
     setTimeout(() => {
-      projectsView.innerHTML = `
-        <div class="projects-arrows">
-          ${t.repos.map(r => `
-            <a href="${r.url}" target="_blank">${r.name}</a>
-          `).join('')}
-        </div>
-        <p class="projects-hint">${t.projects.hint || 'click anywhere to go back'}</p>
-      `;
+      if (projectsHint) projectsHint.textContent = t.projects.hint || 'click anywhere to go back';
       projectsView.classList.add('active');
       setTimeout(() => {
         projectsView.style.opacity = '1';
@@ -171,21 +139,13 @@ function initModal() {
     if (projectsMode && !e.target.closest('.projects-arrows') && !e.target.closest('#projectsBtn')) {
       projectsMode = false;
       projectsView.style.opacity = '0';
+      loader.classList.add('hide-signature');
       setTimeout(() => {
         projectsView.classList.remove('active');
-        loader.classList.add('hide-signature');
         loader.classList.remove('panels-close');
         loader.classList.add('panels-open');
       }, 300);
     }
-  });
-
-  document.getElementById('closeModal').addEventListener('click', () => {
-    modal.classList.remove('active');
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.remove('active');
   });
 }
 
