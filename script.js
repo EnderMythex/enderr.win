@@ -148,7 +148,7 @@ function initModal() {
     loader.classList.remove('panels-open');
     loader.classList.remove('hide-signature');
     loader.classList.add('panels-close');
-    
+
     setTimeout(() => {
       projectsView.innerHTML = `
         <div class="projects-arrows">
