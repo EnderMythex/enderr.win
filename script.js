@@ -225,6 +225,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader-container');
     setTimeout(() => {
       loader.classList.add('panels-open');
-    }, 5000);
+    }, 4200);
   });
-});
+
+  // Music Player
+  const audio = document.getElementById('audio');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const playIcon = document.getElementById('play-icon');
+  const pauseIcon = document.getElementById('pause-icon');
+  const progress = document.getElementById('progress');
+  const currentTimeEl = document.getElementById('current-time');
+  const totalTimeEl = document.getElementById('total-time');
+
+  audio.volume = 0.15;
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  function togglePlayPause() {
+    if (audio.paused) {
+      audio.play();
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+    } else {
+      audio.pause();
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+    }
+  }
+
+  function updateProgress() {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.value = percent;
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+  }
+
+  playPauseBtn.addEventListener('click', togglePlayPause);
+
+  audio.addEventListener('timeupdate', updateProgress);
+
+  audio.addEventListener('loadedmetadata', () => {
+    totalTimeEl.textContent = formatTime(audio.duration);
+  });
+
+  progress.addEventListener('input', () => {
+    const time = (progress.value / 100) * audio.duration;
+    audio.currentTime = time;
+  });
+
+  audio.addEventListener('ended', () => {
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+    progress.value = 0;
+    currentTimeEl.textContent = '0:00';
+  });
+
+  audio.addEventListener('error', () => {
+    console.error('Audio load error');
+    playIcon.style.display = 'block';
+    pauseIcon.style.display = 'none';
+    currentTimeEl.textContent = 'Error';
+    totalTimeEl.textContent = 'Error';
+  });
+});

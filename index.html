@@ -54,63 +54,43 @@
         }
 
         .sig-letter:nth-child(2) {
-          animation-delay: 0.7s;
+          animation-delay: 0.55s;
         }
 
         .sig-letter:nth-child(3) {
-          animation-delay: 1.1s;
+          animation-delay: 0.8s;
         }
 
         .sig-letter:nth-child(4) {
-          animation-delay: 1.5s;
+          animation-delay: 1.05s;
         }
 
         .sig-letter:nth-child(5) {
-          animation-delay: 1.9s;
+          animation-delay: 1.3s;
         }
 
         .sig-letter:nth-child(6) {
+          animation-delay: 1.55s;
+        }
+
+        .sig-letter:nth-child(7) {
+          animation-delay: 1.8s;
+        }
+
+        .sig-letter:nth-child(8) {
+          animation-delay: 2.05s;
+        }
+
+        .sig-letter:nth-child(9) {
           animation-delay: 2.3s;
         }
 
-        .sig-letter:nth-child(7) {
-          animation-delay: 2.7s;
-        }
-
-        .sig-letter:nth-child(8) {
-          animation-delay: 3.1s;
-        }
-
-        .sig-letter:nth-child(9) {
-          animation-delay: 3.5s;
-        }
-
         .sig-letter:nth-child(10) {
-          animation-delay: 3.9s;
+          animation-delay: 2.55s;
         }
 
         .sig-letter:nth-child(11) {
-          animation-delay: 4.3s;
-        }
-
-        .sig-letter:nth-child(7) {
-          animation-delay: 2.7s;
-        }
-
-        .sig-letter:nth-child(8) {
-          animation-delay: 3.1s;
-        }
-
-        .sig-letter:nth-child(9) {
-          animation-delay: 3.5s;
-        }
-
-        .sig-letter:nth-child(10) {
-          animation-delay: 3.9s;
-        }
-
-        .sig-letter:nth-child(11) {
-          animation-delay: 4.3s;
+          animation-delay: 2.8s;
         }
 
         @keyframes drawLetter {
@@ -128,7 +108,7 @@
         .signature-underline {
           stroke-dasharray: 600;
           stroke-dashoffset: 600;
-          animation: drawUnderline 0.8s ease-out 4.8s forwards;
+          animation: drawUnderline 0.6s ease-out 3.2s forwards;
         }
 
         @keyframes drawUnderline {
@@ -155,9 +135,8 @@
     </svg>
   </div>
 
-  <video class="video-background" autoplay loop muted playsinline>
-    <source src="https://cdn.enderr.win/maintenance-video.mp4" type="video/mp4">
-    <source src="./videos/axiom.mp4" type="video/mp4">
+  <video class="video-background" id="bgVideo" autoplay loop muted playsinline>
+    <source id="bgVideoSource" src="https://cdn.enderr.win/maintenance-video.mp4" type="video/mp4">
   </video>
 
   <div class="top-bar"></div>
@@ -178,13 +157,37 @@
     </div>
 
     <div class="footer">
-      <div class="langs">
-        <span class="lang-btn" data-lang="fr">Français</span>
-        <span class="lang-btn active" data-lang="en">English</span>
-        <span class="lang-btn" data-lang="ja">日本語</span>
-        <span class="lang-btn" data-lang="ru">Русский</span>
+      <div class="footer-left">
+        <div class="langs">
+          <span class="lang-btn" data-lang="fr">Français</span>
+          <span class="lang-btn active" data-lang="en">English</span>
+          <span class="lang-btn" data-lang="ja">日本語</span>
+          <span class="lang-btn" data-lang="ru">Русский</span>
+        </div>
+        <p>© <span class="copyright-year"></span> - All rights reserved</p>
       </div>
-      <p>© <span class="copyright-year"></span> - All rights reserved</p>
+      <div id="music-player">
+        <audio id="audio" src="music/music.mp3"></audio>
+        <img id="player-cover" src="pictures/music_cover.jpeg" alt="Album cover">
+        <div class="player-info">
+          <span class="song-title">Выход из портала</span>
+          <span class="artist-name">Chernoburkv</span>
+        </div>
+        <button id="play-pause-btn">
+          <svg id="play-icon" viewBox="0 0 24 24" fill="white">
+            <polygon points="5,3 19,12 5,21"></polygon>
+          </svg>
+          <svg id="pause-icon" viewBox="0 0 24 24" fill="white" style="display:none;">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+        </button>
+        <div class="progress-container">
+          <span id="current-time">0:00</span>
+          <input type="range" id="progress" value="0" min="0" max="100">
+          <span id="total-time">0:00</span>
+        </div>
+      </div>
     </div>
   </div>
 
