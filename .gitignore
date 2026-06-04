@@ -1,2 +1,9 @@
 /.next
 node_modules
+
+# Server (Node.js + Express stats API)
+server/node_modules/
+server/.env
+server/.env.local
+server/data/
+server/*.log

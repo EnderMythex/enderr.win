@@ -8,10 +8,21 @@ const translations = {
       grass: 'grass',
       status: 'status',
       projects: 'projects',
+      stats: 'stats',
       email: 'email'
     },
     projects: {
       hint: 'click anywhere to go back'
+    },
+    stats: {
+      replies: 'replies',
+      likes: 'likes',
+      claims: 'claims',
+      hint: 'click anywhere to go back',
+      lastAction: 'last action: {action} • {time}',
+      never: 'never',
+      offline: 'stats offline',
+      loading: '…'
     },
     copy: '© {year} - All rights reserved'
   },
@@ -24,10 +35,21 @@ const translations = {
       grass: 'grass',
       status: 'statut',
       projects: 'projets',
+      stats: 'stats',
       email: 'e-mail'
     },
     projects: {
       hint: 'cliquez ailleurs pour revenir'
+    },
+    stats: {
+      replies: 'réponses',
+      likes: 'likes',
+      claims: 'réclamations',
+      hint: 'cliquez ailleurs pour revenir',
+      lastAction: 'dernière action : {action} • {time}',
+      never: 'jamais',
+      offline: 'stats hors-ligne',
+      loading: '…'
     },
     copy: '© {year} - Tous droits réservés'
   },
@@ -40,10 +62,21 @@ const translations = {
       grass: 'grass',
       status: 'ステータス',
       projects: 'プロジェクト',
+      stats: '統計',
       email: 'メール'
     },
     projects: {
       hint: 'クリックで戻る'
+    },
+    stats: {
+      replies: 'リプライ',
+      likes: 'いいね',
+      claims: 'クレーム',
+      hint: 'クリックで戻る',
+      lastAction: '最終アクション: {action} • {time}',
+      never: 'なし',
+      offline: '統計オフライン',
+      loading: '…'
     },
     copy: '© {year} - 無断転載禁止'
   },
@@ -56,10 +89,21 @@ const translations = {
       grass: 'grass',
       status: 'статус',
       projects: 'проекты',
+      stats: 'статистика',
       email: 'почта'
     },
     projects: {
       hint: 'нажмите для возврата'
+    },
+    stats: {
+      replies: 'ответы',
+      likes: 'лайки',
+      claims: 'клеймы',
+      hint: 'нажмите для возврата',
+      lastAction: 'последнее действие: {action} • {time}',
+      never: 'никогда',
+      offline: 'статистика недоступна',
+      loading: '…'
     },
     copy: '© {year} - Все права защищены'
   }
@@ -91,14 +135,26 @@ function applyLang(lang) {
   document.querySelector('.footer p').innerHTML = t.copy.replace('{year}', year);
 
   const links = document.querySelectorAll('#links a');
-  const linkKeys = ['twitter', 'discord', 'axiom', 'grass', 'status', 'projects', 'email'];
+  const linkKeys = ['twitter', 'discord', 'axiom', 'grass', 'status', 'projects', 'stats', 'email'];
   links.forEach((link, i) => {
-    if (linkKeys[i] !== 'projects') {
+    if (linkKeys[i] !== 'projects' && linkKeys[i] !== 'stats') {
       link.textContent = t.links[linkKeys[i]];
     }
   });
 
   document.getElementById('projectsBtn').textContent = t.links.projects;
+  document.getElementById('statsBtn').textContent = t.links.stats;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const parts = key.split('.');
+    let val = t;
+    for (const p of parts) {
+      if (val && typeof val === 'object' && p in val) val = val[p];
+      else { val = null; break; }
+    }
+    if (typeof val === 'string') el.textContent = val;
+  });
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -146,6 +202,152 @@ function initModal() {
         loader.classList.add('panels-open');
       }, 300);
     }
+  });
+}
+
+const STATS_API_URL = (typeof window !== 'undefined' && window.STATS_API_URL)
+  || '/api/stats/og-task-bot';
+
+function formatRelative(iso, t) {
+  if (!iso) return t.stats.never;
+  const then = new Date(iso);
+  if (isNaN(then.getTime())) return t.stats.never;
+  const diff = Math.max(0, Date.now() - then.getTime());
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h ago`;
+  const day = Math.floor(hr / 24);
+  if (day < 30) return `${day}d ago`;
+  const mon = Math.floor(day / 30);
+  if (mon < 12) return `${mon}mo ago`;
+  return `${Math.floor(mon / 12)}y ago`;
+}
+
+function animateCount(el, target) {
+  if (!el) return;
+  const start = parseInt(el.dataset.value || '0', 10) || 0;
+  if (start === target) {
+    el.textContent = target.toLocaleString();
+    return;
+  }
+  const duration = 700;
+  const t0 = performance.now();
+  function step(now) {
+    const p = Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(start + (target - start) * eased);
+    el.textContent = val.toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+    else el.dataset.value = String(target);
+  }
+  requestAnimationFrame(step);
+}
+
+let statsAbort = null;
+
+async function fetchAndRenderStats() {
+  const lang = localStorage.getItem('lang') || getBrowserLang();
+  const t = translations[lang];
+  const repliesEl = document.getElementById('stat-replies');
+  const likesEl = document.getElementById('stat-likes');
+  const claimsEl = document.getElementById('stat-claims');
+  const metaEl = document.getElementById('stats-meta');
+
+  repliesEl.textContent = t.stats.loading;
+  likesEl.textContent = t.stats.loading;
+  claimsEl.textContent = t.stats.loading;
+  metaEl.textContent = '';
+
+  if (statsAbort) statsAbort.abort();
+  statsAbort = new AbortController();
+
+  try {
+    const res = await fetch(STATS_API_URL, {
+      cache: 'no-store',
+      signal: statsAbort.signal
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    animateCount(repliesEl, data.total_replies || 0);
+    animateCount(likesEl, data.total_likes || 0);
+    animateCount(claimsEl, data.total_claims || 0);
+    const action = data.last_action || '—';
+    const when = formatRelative(data.last_action_at, t);
+    metaEl.textContent = t.stats.lastAction
+      .replace('{action}', action)
+      .replace('{time}', when);
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.error('stats fetch failed:', err);
+    repliesEl.textContent = '—';
+    likesEl.textContent = '—';
+    claimsEl.textContent = '—';
+    metaEl.textContent = t.stats.offline;
+  }
+}
+
+function initStats() {
+  const statsView = document.getElementById('stats-view');
+  const statsBtn = document.getElementById('statsBtn');
+  const loader = document.getElementById('loader-container');
+  let statsMode = false;
+  let refreshTimer = null;
+
+  function open() {
+    const lang = localStorage.getItem('lang') || getBrowserLang();
+    const t = translations[lang];
+
+    loader.classList.remove('panels-open');
+    loader.classList.add('hide-signature');
+    loader.classList.add('panels-close');
+
+    setTimeout(() => {
+      statsView.classList.add('active');
+      setTimeout(() => {
+        statsView.style.opacity = '1';
+      }, 50);
+    }, 2000);
+
+    statsMode = true;
+    fetchAndRenderStats();
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(fetchAndRenderStats, 15000);
+  }
+
+  function close() {
+    statsMode = false;
+    statsView.style.opacity = '0';
+    loader.classList.add('hide-signature');
+    if (refreshTimer) {
+      clearInterval(refreshTimer);
+      refreshTimer = null;
+    }
+    setTimeout(() => {
+      statsView.classList.remove('active');
+      loader.classList.remove('panels-close');
+      loader.classList.add('panels-open');
+    }, 300);
+  }
+
+  statsBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    open();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (statsMode
+      && !e.target.closest('.stats-content')
+      && !e.target.closest('#statsBtn')) {
+      close();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && statsMode) close();
   });
 }
 
@@ -214,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lang = savedLang || getBrowserLang();
   applyLang(lang);
   initModal();
+  initStats();
   initLinkPreview();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
