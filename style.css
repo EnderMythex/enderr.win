@@ -496,62 +496,67 @@ h1 {
   display: flex;
 }
 
-.stats-content {
+.stats-columns {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
+  flex-direction: row;
+  gap: 80px;
   padding: 40px;
   max-width: 900px;
   width: 90%;
+  justify-content: center;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  width: 100%;
-}
-
-.stat-card {
+.stats-bot {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 30px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  gap: 20px;
 }
 
-.stat-card:hover {
-  border-color: #333;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.stat-label {
-  font-size: 0.85rem;
-  color: #888;
-  text-transform: lowercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-value {
-  font-size: 2.6rem;
+.stats-bot-title {
+  font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
-  font-family: 'HorrorFont', sans-serif;
-  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.stats-bot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stats-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ccc;
+  font-size: 1rem;
+  text-transform: lowercase;
+}
+
+.stats-item:before {
+  content: '→';
+  color: #fff;
+  margin-right: 4px;
+}
+
+.stats-item-label {
+  color: #ccc;
+}
+
+.stats-item-value {
+  color: #fff;
+  font-weight: 600;
+  margin-left: auto;
   font-variant-numeric: tabular-nums;
 }
 
-.stats-meta {
+.stats-bot-meta {
   font-size: 0.8rem;
-  color: #666;
+  color: #555;
   margin: 0;
-  text-align: center;
+  text-transform: lowercase;
 }
 
 .stats-hint {
@@ -588,16 +593,9 @@ h1 {
     width: 45px;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .stat-value {
-    font-size: 2.2rem;
-  }
-
-  .stat-card {
-    padding: 24px 16px;
+  .stats-columns {
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
   }
 }

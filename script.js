@@ -18,6 +18,7 @@ const translations = {
       replies: 'replies',
       likes: 'likes',
       claims: 'claims',
+      flames: 'flames',
       hint: 'click anywhere to go back',
       lastAction: 'last action: {action} • {time}',
       never: 'never',
@@ -45,6 +46,7 @@ const translations = {
       replies: 'réponses',
       likes: 'likes',
       claims: 'réclamations',
+      flames: 'flames',
       hint: 'cliquez ailleurs pour revenir',
       lastAction: 'dernière action : {action} • {time}',
       never: 'jamais',
@@ -72,6 +74,7 @@ const translations = {
       replies: 'リプライ',
       likes: 'いいね',
       claims: 'クレーム',
+      flames: 'フレーム',
       hint: 'クリックで戻る',
       lastAction: '最終アクション: {action} • {time}',
       never: 'なし',
@@ -99,6 +102,7 @@ const translations = {
       replies: 'ответы',
       likes: 'лайки',
       claims: 'клеймы',
+      flames: 'огни',
       hint: 'нажмите для возврата',
       lastAction: 'последнее действие: {action} • {time}',
       never: 'никогда',
@@ -205,8 +209,8 @@ function initModal() {
   });
 }
 
-const STATS_API_URL = (typeof window !== 'undefined' && window.STATS_API_URL)
-  || '/api/stats/og-task-bot';
+const TWITTER_API = '/api/stats/og-task-bot';
+const TIKTOK_API = '/api/stats/tiktok-task-bot';
 
 function formatRelative(iso, t) {
   if (!iso) return t.stats.never;
@@ -248,44 +252,81 @@ function animateCount(el, target) {
 
 let statsAbort = null;
 
-async function fetchAndRenderStats() {
-  const lang = localStorage.getItem('lang') || getBrowserLang();
-  const t = translations[lang];
-  const repliesEl = document.getElementById('stat-replies');
-  const likesEl = document.getElementById('stat-likes');
-  const claimsEl = document.getElementById('stat-claims');
-  const metaEl = document.getElementById('stats-meta');
+function renderTwitterBot(data, t) {
+  const repliesEl = document.getElementById('stat-twitter-replies');
+  const likesEl = document.getElementById('stat-twitter-likes');
+  const claimsEl = document.getElementById('stat-twitter-claims');
+  const metaEl = document.getElementById('stat-twitter-meta');
 
-  repliesEl.textContent = t.stats.loading;
-  likesEl.textContent = t.stats.loading;
-  claimsEl.textContent = t.stats.loading;
-  metaEl.textContent = '';
-
-  if (statsAbort) statsAbort.abort();
-  statsAbort = new AbortController();
-
-  try {
-    const res = await fetch(STATS_API_URL, {
-      cache: 'no-store',
-      signal: statsAbort.signal
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    animateCount(repliesEl, data.total_replies || 0);
-    animateCount(likesEl, data.total_likes || 0);
-    animateCount(claimsEl, data.total_claims || 0);
-    const action = data.last_action || '—';
-    const when = formatRelative(data.last_action_at, t);
-    metaEl.textContent = t.stats.lastAction
-      .replace('{action}', action)
-      .replace('{time}', when);
-  } catch (err) {
-    if (err.name === 'AbortError') return;
-    console.error('stats fetch failed:', err);
+  if (!data || Object.keys(data).length === 0) {
     repliesEl.textContent = '—';
     likesEl.textContent = '—';
     claimsEl.textContent = '—';
-    metaEl.textContent = t.stats.offline;
+    metaEl.textContent = t.stats.never;
+    return;
+  }
+  animateCount(repliesEl, data.total_replies || 0);
+  animateCount(likesEl, data.total_likes || 0);
+  animateCount(claimsEl, data.total_claims || 0);
+  const action = data.last_action || '—';
+  const when = formatRelative(data.last_action_at, t);
+  metaEl.textContent = t.stats.lastAction
+    .replace('{action}', action)
+    .replace('{time}', when);
+}
+
+function renderTiktokBot(data, t) {
+  const flamesEl = document.getElementById('stat-tiktok-flames');
+  const metaEl = document.getElementById('stat-tiktok-meta');
+
+  if (!data || Object.keys(data).length === 0) {
+    flamesEl.textContent = '—';
+    metaEl.textContent = t.stats.never;
+    return;
+  }
+  animateCount(flamesEl, data.total_flames || 0);
+  const action = data.last_action || '—';
+  const when = formatRelative(data.last_action_at, t);
+  metaEl.textContent = t.stats.lastAction
+    .replace('{action}', action)
+    .replace('{time}', when);
+}
+
+async function fetchJson(url, signal) {
+  const res = await fetch(url, { cache: 'no-store', signal });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function fetchAndRenderStats() {
+  const lang = localStorage.getItem('lang') || getBrowserLang();
+  const t = translations[lang];
+
+  if (statsAbort) statsAbort.abort();
+  statsAbort = new AbortController();
+  const { signal } = statsAbort;
+
+  const results = await Promise.allSettled([
+    fetchJson(TWITTER_API, signal),
+    fetchJson(TIKTOK_API, signal)
+  ]);
+
+  if (results[0].status === 'fulfilled') {
+    renderTwitterBot(results[0].value, t);
+  } else {
+    if (results[0].reason.name === 'AbortError') return;
+    console.error('twitter stats fetch failed:', results[0].reason);
+    renderTwitterBot(null, t);
+    document.getElementById('stat-twitter-meta').textContent = t.stats.offline;
+  }
+
+  if (results[1].status === 'fulfilled') {
+    renderTiktokBot(results[1].value, t);
+  } else {
+    if (results[1].reason.name === 'AbortError') return;
+    console.error('tiktok stats fetch failed:', results[1].reason);
+    renderTiktokBot(null, t);
+    document.getElementById('stat-tiktok-meta').textContent = t.stats.offline;
   }
 }
 
@@ -340,7 +381,7 @@ function initStats() {
 
   document.addEventListener('click', (e) => {
     if (statsMode
-      && !e.target.closest('.stats-content')
+      && !e.target.closest('.stats-columns')
       && !e.target.closest('#statsBtn')) {
       close();
     }

@@ -205,24 +205,37 @@
   </div>
 
   <div id="stats-view">
-    <div class="stats-content">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-label" data-i18n="stats.replies">replies</span>
-          <span class="stat-value" id="stat-replies">—</span>
+    <div class="stats-columns">
+      <div class="stats-bot">
+        <h2 class="stats-bot-title">X (Twitter)</h2>
+        <div class="stats-bot-list">
+          <div class="stats-item">
+            <span class="stats-item-label" data-i18n="stats.replies">replies</span>
+            <span class="stats-item-value" id="stat-twitter-replies">—</span>
+          </div>
+          <div class="stats-item">
+            <span class="stats-item-label" data-i18n="stats.likes">likes</span>
+            <span class="stats-item-value" id="stat-twitter-likes">—</span>
+          </div>
+          <div class="stats-item">
+            <span class="stats-item-label" data-i18n="stats.claims">claims</span>
+            <span class="stats-item-value" id="stat-twitter-claims">—</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <span class="stat-label" data-i18n="stats.likes">likes</span>
-          <span class="stat-value" id="stat-likes">—</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label" data-i18n="stats.claims">claims</span>
-          <span class="stat-value" id="stat-claims">—</span>
-        </div>
+        <p class="stats-bot-meta" id="stat-twitter-meta" data-i18n="stats.never">never</p>
       </div>
-      <p class="stats-meta" id="stats-meta"></p>
-      <p class="stats-hint" data-i18n="stats.hint">click anywhere to go back</p>
+      <div class="stats-bot">
+        <h2 class="stats-bot-title">TikTok Bot</h2>
+        <div class="stats-bot-list">
+          <div class="stats-item">
+            <span class="stats-item-label" data-i18n="stats.flames">flames</span>
+            <span class="stats-item-value" id="stat-tiktok-flames">—</span>
+          </div>
+        </div>
+        <p class="stats-bot-meta" id="stat-tiktok-meta" data-i18n="stats.never">never</p>
+      </div>
     </div>
+    <p class="stats-hint" data-i18n="stats.hint">click anywhere to go back</p>
   </div>
 
   <div class="link-preview" id="linkPreview">
