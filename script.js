@@ -209,8 +209,9 @@ function initModal() {
   });
 }
 
-const TWITTER_API = '/api/stats/og-task-bot';
-const TIKTOK_API = '/api/stats/tiktok-task-bot';
+const API_BASE = 'https://api.enderr.win';
+const TWITTER_API = `${API_BASE}/api/stats/og-task-bot`;
+const TIKTOK_API = `${API_BASE}/api/stats/tiktok-task-bot`;
 
 function formatRelative(iso, t) {
   if (!iso) return t.stats.never;
