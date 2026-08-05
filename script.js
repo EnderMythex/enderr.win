@@ -5,7 +5,6 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
-      grass: 'grass',
       status: 'status',
       projects: 'projects',
       stats: 'stats',
@@ -33,7 +32,6 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
-      grass: 'grass',
       status: 'statut',
       projects: 'projets',
       stats: 'stats',
@@ -61,7 +59,6 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
-      grass: 'grass',
       status: 'ステータス',
       projects: 'プロジェクト',
       stats: '統計',
@@ -89,7 +86,6 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
-      grass: 'grass',
       status: 'статус',
       projects: 'проекты',
       stats: 'статистика',
@@ -139,7 +135,7 @@ function applyLang(lang) {
   document.querySelector('.footer p').innerHTML = t.copy.replace('{year}', year);
 
   const links = document.querySelectorAll('#links a');
-  const linkKeys = ['twitter', 'discord', 'axiom', 'grass', 'status', 'projects', 'stats', 'email'];
+  const linkKeys = ['twitter', 'discord', 'axiom', 'status', 'projects', 'stats', 'email'];
   links.forEach((link, i) => {
     if (linkKeys[i] !== 'projects' && linkKeys[i] !== 'stats') {
       link.textContent = t.links[linkKeys[i]];
@@ -535,4 +531,4 @@ document.addEventListener('DOMContentLoaded', () => {
     currentTimeEl.textContent = 'Error';
     totalTimeEl.textContent = 'Error';
   });
-});
+});
