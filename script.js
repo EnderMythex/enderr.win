@@ -215,8 +215,8 @@ function renderContribGraph(weeks, total) {
 
   grid.innerHTML = '';
   monthsRow.innerHTML = '';
-  grid.style.gridTemplateColumns = `repeat(${weeks.length}, 11px)`;
-  monthsRow.style.gridTemplateColumns = `repeat(${weeks.length}, 11px)`;
+  grid.style.gridTemplateColumns = `repeat(${weeks.length}, 10px)`;
+  monthsRow.style.gridTemplateColumns = `repeat(${weeks.length}, 10px)`;
 
   let lastMonth = -1;
   weeks.forEach((week, wi) => {

@@ -479,12 +479,9 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background: #0a0a0a;
-  border: 1px solid #1a1a1a;
-  border-radius: 10px;
-  padding: 20px 24px;
-  max-width: 640px;
-  width: 90%;
+  border-top: 1px solid #1a1a1a;
+  padding-top: 1.5rem;
+  width: min(94vw, 780px);
   box-sizing: border-box;
 }
 
@@ -492,31 +489,51 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #fff;
+  color: #ccc;
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 600;
   width: fit-content;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .github-card-header:hover {
-  opacity: 0.7;
+  color: #fff;
 }
 
 .github-icon {
   flex-shrink: 0;
+  color: #fff;
 }
 
 .contrib-graph-wrap {
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a transparent;
+}
+
+.contrib-graph-wrap::-webkit-scrollbar {
+  height: 4px;
+}
+
+.contrib-graph-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.contrib-graph-wrap::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 2px;
+}
+
+.contrib-graph-wrap::-webkit-scrollbar-thumb:hover {
+  background: #444;
 }
 
 .contrib-months {
   display: grid;
   grid-auto-flow: column;
-  gap: 3px;
+  gap: 2px;
   height: 14px;
   margin-bottom: 4px;
 }
@@ -531,14 +548,14 @@ h1 {
 
 .contrib-grid {
   display: grid;
-  grid-template-rows: repeat(7, 11px);
-  gap: 3px;
+  grid-template-rows: repeat(7, 10px);
+  gap: 2px;
   width: fit-content;
 }
 
 .contrib-cell {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
   background: #141414;
   position: relative;
@@ -736,7 +753,4 @@ h1 {
     padding: 20px;
   }
 
-  .github-card {
-    padding: 16px;
-  }
 }
