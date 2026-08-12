@@ -5,13 +5,16 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
+      invo: 'invo',
       status: 'status',
       projects: 'projects',
       stats: 'stats',
       email: 'email'
     },
     projects: {
-      hint: 'click anywhere to go back'
+      hint: 'click anywhere to go back',
+      less: 'less',
+      more: 'more'
     },
     stats: {
       replies: 'replies',
@@ -32,13 +35,16 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
+      invo: 'invo',
       status: 'statut',
       projects: 'projets',
       stats: 'stats',
       email: 'e-mail'
     },
     projects: {
-      hint: 'cliquez ailleurs pour revenir'
+      hint: 'cliquez ailleurs pour revenir',
+      less: 'moins',
+      more: 'plus'
     },
     stats: {
       replies: 'réponses',
@@ -59,13 +65,16 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
+      invo: 'invo',
       status: 'ステータス',
       projects: 'プロジェクト',
       stats: '統計',
       email: 'メール'
     },
     projects: {
-      hint: 'クリックで戻る'
+      hint: 'クリックで戻る',
+      less: '少ない',
+      more: '多い'
     },
     stats: {
       replies: 'リプライ',
@@ -86,13 +95,16 @@ const translations = {
       twitter: 'twitter',
       discord: 'discord',
       axiom: 'axiom',
+      invo: 'invo',
       status: 'статус',
       projects: 'проекты',
       stats: 'статистика',
       email: 'почта'
     },
     projects: {
-      hint: 'нажмите для возврата'
+      hint: 'нажмите для возврата',
+      less: 'меньше',
+      more: 'больше'
     },
     stats: {
       replies: 'ответы',
@@ -135,7 +147,7 @@ function applyLang(lang) {
   document.querySelector('.footer p').innerHTML = t.copy.replace('{year}', year);
 
   const links = document.querySelectorAll('#links a');
-  const linkKeys = ['twitter', 'discord', 'axiom', 'status', 'projects', 'stats', 'email'];
+  const linkKeys = ['twitter', 'discord', 'axiom', 'invo', 'status', 'projects', 'stats', 'email'];
   links.forEach((link, i) => {
     if (linkKeys[i] !== 'projects' && linkKeys[i] !== 'stats') {
       link.textContent = t.links[linkKeys[i]];
@@ -159,6 +171,136 @@ function applyLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
+}
+
+const GITHUB_USERNAME = 'EnderMythex';
+const GITHUB_CONTRIB_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function buildContribWeeks(contributions) {
+  if (!contributions || contributions.length === 0) return [];
+
+  const byDate = new Map(contributions.map(d => [d.date, d]));
+  const firstDate = new Date(contributions[0].date + 'T00:00:00');
+  const lastDate = new Date(contributions[contributions.length - 1].date + 'T00:00:00');
+
+  const start = new Date(firstDate);
+  start.setDate(start.getDate() - start.getDay());
+
+  const weeks = [];
+  const cursor = new Date(start);
+  while (cursor <= lastDate) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const iso = cursor.toISOString().slice(0, 10);
+      const entry = byDate.get(iso);
+      week.push({
+        date: iso,
+        dateObj: new Date(cursor),
+        count: entry ? entry.count : null,
+        level: entry ? entry.level : null
+      });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    weeks.push(week);
+  }
+  return weeks;
+}
+
+function renderContribGraph(weeks, total) {
+  const grid = document.getElementById('contribGrid');
+  const monthsRow = document.getElementById('contribMonths');
+  const totalEl = document.getElementById('contribTotal');
+  if (!grid || !monthsRow) return;
+
+  grid.innerHTML = '';
+  monthsRow.innerHTML = '';
+  grid.style.gridTemplateColumns = `repeat(${weeks.length}, 11px)`;
+  monthsRow.style.gridTemplateColumns = `repeat(${weeks.length}, 11px)`;
+
+  let lastMonth = -1;
+  weeks.forEach((week, wi) => {
+    const firstValidDay = week.find(d => d.count !== null) || week[0];
+    const month = firstValidDay.dateObj.getMonth();
+    if (month !== lastMonth) {
+      const label = document.createElement('span');
+      label.className = 'contrib-month-label';
+      label.style.gridColumn = String(wi + 1);
+      label.textContent = MONTH_NAMES[month];
+      monthsRow.appendChild(label);
+      lastMonth = month;
+    }
+
+    week.forEach((day, di) => {
+      const cell = document.createElement('div');
+      cell.style.gridColumn = String(wi + 1);
+      cell.style.gridRow = String(di + 1);
+      if (day.count === null) {
+        cell.className = 'contrib-cell contrib-cell-empty';
+      } else {
+        cell.className = 'contrib-cell';
+        cell.dataset.level = String(day.level);
+        const d = day.dateObj;
+        cell.dataset.tooltip = `${day.count} contribution${day.count === 1 ? '' : 's'} on ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+      }
+      grid.appendChild(cell);
+    });
+  });
+
+  if (totalEl) {
+    totalEl.textContent = `${total.toLocaleString()} contributions in the last 12 months`;
+  }
+}
+
+function initContribTooltip() {
+  const grid = document.getElementById('contribGrid');
+  const tooltip = document.getElementById('contribTooltip');
+  if (!grid || !tooltip) return;
+
+  const show = (cell) => {
+    const text = cell.dataset.tooltip;
+    if (!text) return;
+    tooltip.textContent = text;
+    tooltip.classList.add('active');
+
+    const rect = cell.getBoundingClientRect();
+    const tw = tooltip.offsetWidth;
+    let left = rect.left + rect.width / 2 - tw / 2;
+    left = Math.max(6, Math.min(left, window.innerWidth - tw - 6));
+    const top = rect.top - tooltip.offsetHeight - 8;
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+  };
+
+  const hide = () => tooltip.classList.remove('active');
+
+  grid.addEventListener('mouseover', (e) => {
+    const cell = e.target.closest('.contrib-cell[data-tooltip]');
+    if (cell) show(cell);
+  });
+
+  grid.addEventListener('mouseout', (e) => {
+    const cell = e.target.closest('.contrib-cell[data-tooltip]');
+    if (cell) hide();
+  });
+}
+
+let contribLoaded = false;
+async function loadGithubContributions() {
+  if (contribLoaded) return;
+  const totalEl = document.getElementById('contribTotal');
+  try {
+    const data = await fetchJson(GITHUB_CONTRIB_API);
+    const contributions = data.contributions || [];
+    const weeks = buildContribWeeks(contributions);
+    const total = contributions.reduce((sum, d) => sum + (d.count || 0), 0);
+    renderContribGraph(weeks, total);
+    contribLoaded = true;
+  } catch (err) {
+    console.error('github contributions fetch failed:', err);
+    if (totalEl) totalEl.textContent = 'unable to load contributions';
+  }
 }
 
 function initModal() {
@@ -189,10 +331,14 @@ function initModal() {
     }, 2000);
 
     projectsMode = true;
+    loadGithubContributions();
   });
 
   document.addEventListener('click', (e) => {
-    if (projectsMode && !e.target.closest('.projects-arrows') && !e.target.closest('#projectsBtn')) {
+    if (projectsMode
+      && !e.target.closest('.projects-arrows')
+      && !e.target.closest('.github-card')
+      && !e.target.closest('#projectsBtn')) {
       projectsMode = false;
       projectsView.style.opacity = '0';
       loader.classList.add('hide-signature');
@@ -456,6 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModal();
   initStats();
   initLinkPreview();
+  initContribTooltip();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => switchLang(btn.dataset.lang));

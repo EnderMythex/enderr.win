@@ -475,6 +475,143 @@ h1 {
   text-transform: lowercase;
 }
 
+.github-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 10px;
+  padding: 20px 24px;
+  max-width: 640px;
+  width: 90%;
+  box-sizing: border-box;
+}
+
+.github-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  width: fit-content;
+  transition: opacity 0.2s ease;
+}
+
+.github-card-header:hover {
+  opacity: 0.7;
+}
+
+.github-icon {
+  flex-shrink: 0;
+}
+
+.contrib-graph-wrap {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.contrib-months {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 3px;
+  height: 14px;
+  margin-bottom: 4px;
+}
+
+.contrib-month-label {
+  font-size: 0.65rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.contrib-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 11px);
+  gap: 3px;
+  width: fit-content;
+}
+
+.contrib-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: #141414;
+  position: relative;
+}
+
+.contrib-cell[data-level="1"] {
+  background: #2d2d2d;
+}
+
+.contrib-cell[data-level="2"] {
+  background: #4d4d4d;
+}
+
+.contrib-cell[data-level="3"] {
+  background: #8a8a8a;
+}
+
+.contrib-cell[data-level="4"] {
+  background: #fff;
+}
+
+.contrib-cell-empty {
+  background: transparent;
+}
+
+.contrib-tooltip {
+  position: fixed;
+  background: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10050;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.contrib-tooltip.active {
+  opacity: 1;
+}
+
+.contrib-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.contrib-total {
+  color: #888;
+  font-size: 0.78rem;
+  text-transform: lowercase;
+}
+
+.contrib-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #555;
+  font-size: 0.7rem;
+  text-transform: lowercase;
+}
+
+.contrib-legend .contrib-cell {
+  width: 10px;
+  height: 10px;
+}
+
 #stats-view {
   position: fixed;
   top: 0;
@@ -597,5 +734,9 @@ h1 {
     flex-direction: column;
     gap: 40px;
     padding: 20px;
+  }
+
+  .github-card {
+    padding: 16px;
   }
 }
