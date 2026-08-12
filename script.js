@@ -286,21 +286,50 @@ function initContribTooltip() {
   });
 }
 
+const CONTRIB_CACHE_KEY = 'gh_contrib_cache_v1';
+
+async function fetchJsonWithRetry(url, attempts = 3, delayMs = 700) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fetchJson(url);
+    } catch (err) {
+      lastErr = err;
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 let contribLoaded = false;
 async function loadGithubContributions() {
   if (contribLoaded) return;
   const totalEl = document.getElementById('contribTotal');
+  let data = null;
+
   try {
-    const data = await fetchJson(GITHUB_CONTRIB_API);
-    const contributions = data.contributions || [];
-    const weeks = buildContribWeeks(contributions);
-    const total = contributions.reduce((sum, d) => sum + (d.count || 0), 0);
-    renderContribGraph(weeks, total);
-    contribLoaded = true;
+    data = await fetchJsonWithRetry(GITHUB_CONTRIB_API);
+    localStorage.setItem(CONTRIB_CACHE_KEY, JSON.stringify(data));
   } catch (err) {
     console.error('github contributions fetch failed:', err);
-    if (totalEl) totalEl.textContent = 'unable to load contributions';
+    try {
+      const cached = localStorage.getItem(CONTRIB_CACHE_KEY);
+      if (cached) data = JSON.parse(cached);
+    } catch (_) {
+      data = null;
+    }
   }
+
+  if (!data) {
+    if (totalEl) totalEl.textContent = 'unable to load contributions';
+    return;
+  }
+
+  const contributions = data.contributions || [];
+  const weeks = buildContribWeeks(contributions);
+  const total = contributions.reduce((sum, d) => sum + (d.count || 0), 0);
+  renderContribGraph(weeks, total);
+  contribLoaded = true;
 }
 
 function initModal() {
